@@ -6,6 +6,9 @@
       <button (click)="onGenerateReportRestAPI()" [disabled]="isGenerating">
         Generate report using REST API
       </button>
+      <button (click)="onGenerateReportWebsocket()" [disabled]="isGenerating">
+        Generate report using WebSocket
+      </button>
     </div>
     <div *ngIf="isGenerating" class="message">{{'Generating for ' + generationSeconds + ' seconds'}}</div>
     <div *ngIf="reportUrl" class="message">Report generated successfully, download <a

@@ -16,8 +16,9 @@ export class ReportPage {
 
   private reportParameters: ReportParameters = {delay: 40000, amountOfRows: 500};
 
-  // TODO Replace the endpoint below with the endpoint you can find in the Serverless deploy output
+  // TODO Replace the endpoints below with the endpoints you can find in the Serverless deploy output
   private apiEndpoint = 'https://sdyqoa0bb2.execute-api.eu-west-1.amazonaws.com/dev/report';
+  private websocketEndpoint = 'wss://eywb4m6h6j.execute-api.eu-west-1.amazonaws.com/dev';
 
   constructor(private http: HttpClient) {
   }
@@ -29,6 +30,28 @@ export class ReportPage {
     }, (error) => {
       this.onReportGenerationFailure(error);
     });
+  }
+
+  public onGenerateReportWebsocket() {
+    this.initializeReportGeneration();
+
+    const websocket = new WebSocket(this.websocketEndpoint);
+
+    websocket.onopen = () => {
+      websocket.send(
+        JSON.stringify({action: 'generateReport', data: this.reportParameters})
+      );
+    };
+
+    websocket.onmessage = ({data}) => {
+      this.onReportGenerationSuccess(data);
+      websocket.close();
+    };
+
+    websocket.onerror = error => {
+      this.onReportGenerationFailure(error);
+      websocket.close();
+    };
   }
 
   private initializeReportGeneration() {

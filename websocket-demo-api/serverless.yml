@@ -21,6 +21,16 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     REPORTS_BUCKET_NAME: websocket-demo-reports
+    WEBSOCKET_CONNECTIONS_TABLE_NAME: websocket-demo-connections
+    WEBSOCKET_REPORT_GENERATION_LAMBDA_NAME: websocket-demo-api-${self:provider.stage}-websocket-generate-report
+    APIG_ENDPOINT:
+      Fn::Join:
+        - ''
+        - - Ref: WebsocketsApi
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${self:provider.stage}
 
 functions:
   generate-report:
@@ -32,11 +42,30 @@ functions:
           method: post
           path: report
           cors: true
+  handle-websocket-requests:
+    handler: src/handlers/websocket-handler.handleRequests
+    role: handleWebsocketRequestsRole
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: generateReport
+      - websocket:
+          # Handles all other requests
+          route: $default
+  websocket-generate-report:
+    handler: src/handlers/websocket-handler.generateReport
+    role: websocketGenerateReportRole
+    timeout: 120
 
 resources:
   # Roles
   - ${file(resources/roles.yml)}
   # S3
   - ${file(resources/s3.yml)}
+  # DynamoDB
+  - ${file(resources/dynamo.yml)}
 
 
