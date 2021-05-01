@@ -1,0 +1,60 @@
+.page {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content{
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 20px;
+  margin: 0 50px;
+}
+
+.title {
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.buttons{
+  display: flex;
+}
+
+button {
+  color: white;
+  background-color: black;
+  border: 1px solid black;
+
+  padding: 5px 10px;
+  margin: 0 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  outline: none;
+  cursor: pointer;
+
+  &:hover {
+    color: black;
+    background-color: white;
+  }
+
+  &:disabled{
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}
+
+.message{
+  margin-top: 30px;
+
+  &.error{
+    color: red;
+  }
+}

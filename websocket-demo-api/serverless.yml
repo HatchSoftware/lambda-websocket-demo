@@ -1,0 +1,42 @@
+service:
+  name: websocket-demo-api
+
+custom:
+  accountId: '#{AWS::AccountId}'
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+plugins:
+  - serverless-webpack
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+  apiGateway:
+    minimumCompressionSize: 1024
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    REPORTS_BUCKET_NAME: websocket-demo-reports
+
+functions:
+  generate-report:
+    handler: src/handlers/api-handler.generateReport
+    role: generateReportRole
+    timeout: 120
+    events:
+      - http:
+          method: post
+          path: report
+          cors: true
+
+resources:
+  # Roles
+  - ${file(resources/roles.yml)}
+  # S3
+  - ${file(resources/s3.yml)}
+
+

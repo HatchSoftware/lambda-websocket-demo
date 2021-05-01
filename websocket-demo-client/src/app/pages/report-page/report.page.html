@@ -1,0 +1,15 @@
+<div class="page">
+  <div class="content">
+    <div class="title">Report generator</div>
+    <div class="subtitle">Click one of the buttons below to start the report generation.</div>
+    <div class="buttons">
+      <button (click)="onGenerateReportRestAPI()" [disabled]="isGenerating">
+        Generate report using REST API
+      </button>
+    </div>
+    <div *ngIf="isGenerating" class="message">{{'Generating for ' + generationSeconds + ' seconds'}}</div>
+    <div *ngIf="reportUrl" class="message">Report generated successfully, download <a
+      [href]="reportUrl">here</a></div>
+    <div *ngIf="error" class="message error">An error occurred!</div>
+  </div>
+</div>
